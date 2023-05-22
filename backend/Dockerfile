@@ -1,14 +1,6 @@
-FROM python:3.10
-
-RUN mkdir /fastapi
-
+FROM python:3.10-slim
+COPY . /fastapi/
 WORKDIR /fastapi
-
-COPY requirements.txt .
-
+RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
-
-COPY . .
-
 RUN chmod a+x docker/*.sh
-
