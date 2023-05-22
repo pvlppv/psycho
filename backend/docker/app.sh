@@ -1,7 +1,4 @@
 #!/bin/bash
-
 alembic upgrade head
-
 cd app
-
-gunicorn app:app --workers 4 --worker-class uvicorn.workers.UvicornWorker --bind=0.0.0.0:8000
+cat .env-non-dev | gunicorn app:app --workers ${BACKEND_WORKERS} --worker-class uvicorn.workers.UvicornWorker --bind=${BACKEND_HOST}:${BACKEND_PORT} --log-level ${BACKEND_LOG_LEVEL}
