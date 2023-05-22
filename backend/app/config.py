@@ -4,6 +4,12 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+BACKEND_HOST = os.environ.get('BACKEND_HOST')
+BACKEND_PORT = os.environ.get('BACKEND_PORT')
+BACKEND_WORKERS = os.environ.get('BACKEND_WORKERS')
+BACKEND_RELOAD = os.environ.get('BACKEND_RELOAD')
+BACKEND_LOG_LEVEL = os.environ.get('BACKEND_LOG_LEVEL')
+
 DB_HOST = os.environ.get('DB_HOST')
 DB_PORT = os.environ.get('DB_PORT')
 DB_NAME = os.environ.get('DB_NAME')
