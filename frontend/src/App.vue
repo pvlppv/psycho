@@ -1,10 +1,22 @@
 <script setup>
+import { ref, onMounted } from 'vue'
+
+const isPC = ref(false);
+
+onMounted(() => {
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    isPC.value = !isMobile;
+});
+
 </script>
 
 <template>
   <main>
-    <section class="main">
+    <section class="main" v-if="isPC">
         <router-view />
+    </section>
+    <section class="main-mobile" v-else>
+        <el-empty description="Временно доступно только на ПК версии."/>
     </section>
   </main>
 </template>
@@ -73,5 +85,10 @@ section {
     align-items: center;
     justify-content: center;
     gap: 1.5rem;
+}
+.main-mobile {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 </style>

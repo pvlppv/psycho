@@ -39,17 +39,16 @@ class ConnectionManager:
         try:
             message_dict = json.loads(message)
             if locale == 'ru':
-                lobby_message = Message_RU_Create(**message_dict)
+                lobby_message = Message_RU_Create(**message_dict['data'])
                 await self.message_RU_create(lobby_message)
             else:
-                lobby_message = Message_EN_Create(**message_dict)
+                lobby_message = Message_EN_Create(**message_dict['data'])
                 await self.message_EN_create(lobby_message)
             for connection in self.active_connections:
-                await connection.send_text(message_dict['message_text'])
+                await connection.send_json(message_dict)
         except ValidationError as e:
             error_message = e.errors()[0]['msg']
-            await websocket.send_json({'error': error_message})
-            return
+            await websocket.send_json({'event': 'error', 'data': error_message})
 
     @staticmethod
     async def message_EN_create(message: Message_EN_Create):
@@ -79,11 +78,11 @@ async def websocket_endpoint(websocket: WebSocket, locale: str = Path(regex='^(e
             try:
                 message = await websocket.receive_text()
                 await ratelimit(websocket)
-                message_dict = {'message_text': message, 'lobby_name': locale}
+                message_dict = {'event': 'success', 'data': {'message_text': message, 'lobby_name': locale}}
                 message_json = json.dumps(message_dict)
                 await manager.broadcast(message_json, websocket, locale)
             except HTTPException:
-                await websocket.send_text('Сообщения можно отправлять раз в 30 секунд.')
+                await websocket.send_json({'event': 'error', 'data': 'Сообщения можно отправлять раз в 30 секунд.'})
     except WebSocketDisconnect:
         manager.disconnect(websocket)
 

@@ -4,9 +4,9 @@ from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
 
 from config import REDIS_HOST, REDIS_PORT
 from lobby.routers import router as lobby_router
-from reply.routers import router as reply_router
-from report.routers import router as report_router
-from message.routers import router as message_router
+# from reply.routers import router as reply_router
+# from report.routers import router as report_router
+# from message.routers import router as message_router
 
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
@@ -25,15 +25,15 @@ app = FastAPI(
 app.include_router(
     lobby_router,
 )
-app.include_router(
-    reply_router,
-)
-app.include_router(
-    report_router,
-)
-app.include_router(
-    message_router,
-)
+# app.include_router(
+#     reply_router,
+# )
+# app.include_router(
+#     report_router,
+# )
+# app.include_router(
+#     message_router,
+# )
 
 
 origins = [
@@ -48,7 +48,6 @@ app.add_middleware(
                    'Authorization', 'Accept-Language'],
 )
 # app.add_middleware(HTTPSRedirectMiddleware)
-# app.middleware('http')(locale)
 
 
 @app.on_event('startup')
