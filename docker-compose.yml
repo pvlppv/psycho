@@ -1,0 +1,60 @@
+version: '3.7'
+
+services:
+  db:
+    image: postgres:15
+    container_name: db
+    env_file:
+      - .env-non-dev
+    ports:
+     - 5432:5432
+    networks:
+      - app-network
+
+  redis:
+    image: redis:7
+    container_name: redis
+    ports:
+     - 6379:6379
+    networks:
+      - app-network
+
+  backend: 
+    build: ./backend
+    container_name: fastapi
+    command: bash start.sh
+    ports:
+      - 9999:8000
+    depends_on:
+      - db
+      - redis
+    networks:
+      - app-network
+
+  frontend: 
+    build: ./frontend
+    container_name: nodejs
+    command: npm run dev
+    ports:
+      - 1111:5173
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
+  webserver:
+    build: ./nginx
+    container_name: nginx
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+      - frontend
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
