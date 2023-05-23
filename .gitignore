@@ -24,15 +24,12 @@ docs_build
 venv
 docs.zip
 archive.zip
-
 *~
 .*.sw?
-.env
-.DS_Store
-
 node_modules/
 /dist/
-
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+.env
+.DS_Store

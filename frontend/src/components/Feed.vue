@@ -10,13 +10,22 @@ import { ElNotification } from 'element-plus'
 
 // Websockets
 ws.onmessage = (event) => {
-    console.log(event)
-    const newMessage = {
-        id: messages.value.length,
-        message_text: event.data,
-    };
-    messages.value.unshift(newMessage)
-}
+    const message = JSON.parse(event.data);
+    if (message.event === 'error') {
+        ElNotification({
+            title: 'Ошибка',
+            message: message.data,
+            customClass: 'main-notification',
+            type: 'error',
+        });
+    } else {
+        const newMessage = {
+            id: messages.value.length,
+            message_text: message.data.message_text,
+        };
+        messages.value.unshift(newMessage)
+    }
+};
 
 // Infinite Scrolling
 const limit = 20;
@@ -82,21 +91,12 @@ const formatDate = (dateString) => {
     }
 }
 
-// Share
-const notificationReply = () => {
+// Notification
+const notification = () => {
   ElNotification({
-    title: 'Ссылка скопирована.',
-    message: 'Ссылка скопирована.',
-    customClass: 'main-feed-message-tools-tool-notification',
-  })
-}
-
-// Report
-const notificationReport = () => {
-  ElNotification({
-    title: 'Жалоба отправлена',
-    message: 'Жалоба отправлена.',
-    customClass: 'main-feed-message-tools-tool-notification',
+    title: 'Временно не доступно.',
+    customClass: 'main-notification',
+    type: 'info',
   })
 }
 
@@ -119,26 +119,26 @@ const notificationReport = () => {
                             </template>
                         </text-clamp>
                         <div class="main-feed-message-text-3">
-                            <p class="main-feed-message-text-3-one">Ответить</p>
-                            <i class='main-feed-message-text-3-dots bx bx-dots-horizontal-rounded'></i>
-                            <p class="main-feed-message-text-3-one">0 ответов</p>
+                            <p class="main-feed-message-text-3-one" @click="notification">Ответить</p>
+                            <div class="main-feed-message-text-3-one-divider"></div>
+                            <p class="main-feed-message-text-3-one" @click="notification">0 ответов</p>
                         </div>
                     </div>
                     <div class="main-feed-message-tools" ref="tools" :style="{ opacity: toolOpacity[index] }">
-                        <el-tooltip effect="customized" content="Открыть" placement="bottom" transition="none" :enterable="false" :hide-after="0" :offset="15">
-                            <router-link :to="{ name: 'Message', params: { message_id: item.id } }" class="main-feed-message-tools-tool"><i class='bx bx-expand'></i></router-link>
+                        <el-tooltip effect="customized" content="Открыть" placement="bottom" :enterable="false" :hide-after="0" :offset="15">
+                            <!-- <router-link :to="{ name: 'Message', params: { message_id: item.id } }" class="main-feed-message-tools-tool"><i class='bx bx-expand'></i></router-link> -->
+                            <i class='main-feed-message-tools-tool bx bx-expand' @click="notification"></i>
                         </el-tooltip>
-                        <el-tooltip effect="customized" content="Поделиться" placement="bottom" transition="none" :enterable="false" :hide-after="0" :offset="15">
-                            <i class='main-feed-message-tools-tool bx bx-share' @click="notificationReply"></i>
+                        <el-tooltip effect="customized" content="Поделиться" placement="bottom" :enterable="false" :hide-after="0" :offset="15">
+                            <i class='main-feed-message-tools-tool bx bx-share' @click="notification"></i>
                         </el-tooltip>
-                        <el-tooltip effect="customized" content="Пожаловаться" placement="bottom" transition="none" :enterable="false" :hide-after="0" :offset="15">
-                            <i class='main-feed-message-tools-tool bx bx-error' @click="notificationReport"></i>
+                        <el-tooltip effect="customized" content="Пожаловаться" placement="bottom" :enterable="false" :hide-after="0" :offset="15">
+                            <i class='main-feed-message-tools-tool bx bx-error' @click="notification"></i>
                         </el-tooltip>
                     </div>
                 </DynamicScrollerItem>
             </template>
         </DynamicScroller>
-        <!-- <div v-if="loading" class="main-feed-loading"><div class="main-feed-loading-spinner"><div></div><div></div><div></div><div></div><div></div></div></div> -->
     </div>
 </template>
 
@@ -198,7 +198,7 @@ const notificationReport = () => {
 .main-feed-message-text-3 {
     display: flex;
     align-items: center;
-    gap: 0.7rem;
+    gap: 0.5rem;
     color: var(--white-color);
     margin-top: 0.5rem;
     opacity: 0.5;
@@ -206,12 +206,33 @@ const notificationReport = () => {
 .main-feed-message-text-3-one {
     cursor: pointer;
     font-size: 0.7rem;
+    text-decoration: none;
+    transition: text-decoration 0.3s; 
+    position: relative;
 }
-.main-feed-message-text-3-one:hover {
-    text-decoration: underline;
+.main-feed-message-text-3-one::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -2px;
+    width: 100%;
+    height: 1px; 
+    background: var(--white-color); 
+    transform: scaleX(0);
+    transform-origin: center; 
+    transition: transform 0.2s;
 }
-.main-feed-message-text-3-dots {
-    font-size: 0.8rem;
+
+.main-feed-message-text-3-one:hover::after {
+    transform: scaleX(1);
+}
+.main-feed-message-text-3-one-divider {
+    content: "";
+    background: var(--white-color);
+    color: var(--white-color);
+    width: 1px;
+    height: 12px;
+    margin: 0px 10px;
 }
 .main-feed-message-tools {
     position: absolute;
@@ -223,63 +244,11 @@ const notificationReport = () => {
     color: var(--white-color);
     background: var(--black-color);
     opacity: 0;
+    transition: opacity 0.3s;
 }
 .main-feed-message-tools-tool {
     color: var(--white-color);
     cursor: pointer;
-}
-.main-feed-loading {
-    width: 50px;
-    height: 50px;
-    display: inline-block;
-    overflow: hidden;
-    background: var(--black-color);
-}
-.main-feed-loading-spinner {
-    width: 100%;
-    height: 100%;
-    position: relative;
-    transform: translateZ(0) scale(0.5);
-    backface-visibility: hidden;
-    transform-origin: 0 0;
-}
-.main-feed-loading-spinner div {
-    position: absolute;
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    transform: translate(42px,42px) scale(1);
-    background: var(--white-color);
-    animation: main-feed-loading-spinner 3.3333333333333335s infinite cubic-bezier(0,0.5,0.5,1);
-}
-.main-feed-loading-spinner div:nth-child(1) {
-    background: var(--white-color);
-    transform: translate(76px,42px) scale(1);
-    animation: main-feed-loading-spinner-r 0.8333333333333334s infinite cubic-bezier(0,0.5,0.5,1), main-feed-loading-spinner-c 3.3333333333333335s infinite step-start;
-}.main-feed-loading-spinner div:nth-child(2) {
-    animation-delay: -0.8333333333333334s;
-    background: var(--white-color);
-}.main-feed-loading-spinner div:nth-child(3) {
-    animation-delay: -1.6666666666666667s;
-    background: var(--white-color);
-}.main-feed-loading-spinner div:nth-child(4) {
-    animation-delay: -2.5s;
-    background: var(--white-color);
-}.main-feed-loading-spinner div:nth-child(5) {
-    animation-delay: -3.3333333333333335s;
-    background: var(--white-color);
-}
-.main-feed-loading-spinner div { box-sizing: content-box; }
-@keyframes main-feed-loading-spinner {
-    0% { transform: translate(8px,42px) scale(0); }
-    25% { transform: translate(8px,42px) scale(0); }
-    50% { transform: translate(8px,42px) scale(1); }
-    75% { transform: translate(42px,42px) scale(1); }
-    100% { transform: translate(76px,42px) scale(1); }
-}
-@keyframes main-feed-loading-spinner-r {
-    0% { transform: translate(76px,42px) scale(1); }
-    100% { transform: translate(76px,42px) scale(0); }
 }
 .el-popper.is-customized {
     color: var(--black-color);
@@ -289,9 +258,24 @@ const notificationReport = () => {
 .el-popper.is-customized .el-popper__arrow::before {
     background: var(--white-color);
 }
-.main-feed-message-tools-tool-notification {
-    background: var(--black-color);
-    color: var(--white-color);
-    border-radius: 5rem;
+
+.main-notification {
+    background: var(--black-color) !important;
+    --el-notification-width: 300px !important;
+    --el-notification-padding: 14px 26px 14px 13px !important;
+    --el-notification-radius: 0.5rem !important;
+    --el-notification-shadow: var(--el-box-shadow-light) !important;
+    --el-notification-border-color: var(--white-color) !important;
+    --el-notification-icon-size: 24px !important;
+    --el-notification-close-font-size: var(--el-message-close-size, 16px) !important;
+    --el-notification-group-margin-left: 13px !important;
+    --el-notification-group-margin-right: 8px !important;
+    --el-notification-content-font-size: var(--el-font-size-base) !important;
+    --el-notification-content-color: var(--white-color) !important;
+    --el-notification-title-font-size: 0.9rem !important;
+    --el-notification-title-color: var(--white-color) !important;
+    --el-notification-close-color: var(--white-color) !important;
+    --el-notification-close-hover-color: var(--white-color) !important;
+    box-shadow: 0px 0px 10px var(--shadow-white-color), 0px 5px 10px var(--shadow-white-color) !important;
 }
 </style>

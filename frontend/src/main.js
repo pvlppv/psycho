@@ -15,10 +15,6 @@ import 'element-plus/dist/index.css'
 import { createRouter, createWebHistory } from 'vue-router'
 import Main from '@/views/Main.vue'
 
-const AboutWindow = () => import('@/components/AboutWindow.vue')
-const LangWindow = () => import('@/components/LangWindow.vue')
-const Message = async () => import('@/views/Message.vue')
-
 const router = createRouter({
     history: createWebHistory(),
     routes: [
@@ -26,17 +22,22 @@ const router = createRouter({
             path: '/', 
             name: 'Main',
             component: Main,
-            children: [
-                {path: '/about', name: 'About', component: AboutWindow},   
-                {path: '/lang', name: 'Lang', component: LangWindow},             
-            ],
+            // children: [
+            //     {path: '/about', name: 'About', component: () => import('@/components/AboutWindow.vue')},   
+            //     {path: '/lang', name: 'Lang', component: () => import('@/components/LangWindow.vue')},             
+            // ],
         },    
+        // {
+        //     path: '/messages/:message_id', 
+        //     name: 'Message',
+        //     component: async () => import('@/views/Message.vue'),
+        //     props: true,
+        // },
         {
-            path: '/messages/:message_id', 
-            name: 'Message',
-            component: Message,
-            props: true,
-        }
+            path: '/:catchAll(.*)',
+            name: 'NotFound',
+            component: () => import('@/views/NotFound.vue')
+        }        
     ]
 })
 
