@@ -3,41 +3,41 @@ version: '3.7'
 services:
   db:
     image: postgres:15
-    container_name: db
+    container_name: postgres_database
     env_file:
       - .env-non-dev
     ports:
-     - 5432:5432
+      - 5432:5432
     networks:
-      - backend-network
+      - database-network
 
   redis:
     image: redis:7
-    container_name: redis
+    container_name: redis_database
     ports:
-     - 6379:6379
+      - 6379:6379
     networks:
-      - backend-network
+      - database-network
 
   backend: 
     build: ./backend
     container_name: fastapi
     command: bash start.sh
     ports:
-      - 9999:8000
+      - 8000:8000
     depends_on:
       - db
       - redis
     networks:
-      - backend-network
+      - database-network
       - app-network
 
   frontend: 
     build: ./frontend
     container_name: nodejs
-    command: npm run dev
+    command: npm run dev -- --host
     ports:
-      - 1111:5173
+      - 1111:1111
     depends_on:
       - backend
     networks:
@@ -57,8 +57,10 @@ services:
       - app-network
 
 networks:
-  backend-network:
+  database-network:
+    name: database-network
     driver: bridge
     
   app-network:
+    name: app-network
     driver: bridge
