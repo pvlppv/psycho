@@ -10,6 +10,14 @@ services:
       - 5432:5432
     networks:
       - database-network
+    deploy:
+      resources:
+        limits:
+          cpus: '1.00'
+          memory: 128M
+        reservations:
+          cpus: '0.50'
+          memory: 64M 
 
   redis:
     image: redis:7
@@ -18,6 +26,14 @@ services:
       - 6379:6379
     networks:
       - database-network
+    deploy:
+      resources:
+        limits:
+          cpus: '1.00'
+          memory: 256M
+        reservations:
+          cpus: '0.50'
+          memory: 128M 
 
   backend: 
     build: ./backend
@@ -31,6 +47,14 @@ services:
     networks:
       - database-network
       - app-network
+    deploy:
+      resources:
+        limits:
+          cpus: '1.00'
+          memory: 256M
+        reservations:
+          cpus: '0.50'
+          memory: 128M 
 
   frontend: 
     build: ./frontend
@@ -42,6 +66,14 @@ services:
       - backend
     networks:
       - app-network
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 64M
+        reservations:
+          cpus: '0.50'
+          memory: 64M 
 
   webserver:
     build: ./nginx
@@ -55,6 +87,14 @@ services:
       - frontend
     networks:
       - app-network
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 64M
+        reservations:
+          cpus: '0.50'
+          memory: 64M 
 
 networks:
   database-network:
