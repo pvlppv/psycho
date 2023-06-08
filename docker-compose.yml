@@ -1,0 +1,106 @@
+version: '3.7'
+
+services:
+  db:
+    image: postgres:15
+    container_name: postgres_database
+    env_file:
+      - .env-non-dev
+    ports:
+      - 5432:5432
+    networks:
+      - database-network
+    deploy:
+      resources:
+        limits:
+          cpus: '1.00'
+          memory: 128M
+        reservations:
+          cpus: '0.50'
+          memory: 64M 
+
+  redis:
+    image: redis:7
+    container_name: redis_database
+    ports:
+      - 6379:6379
+    networks:
+      - database-network
+    deploy:
+      resources:
+        limits:
+          cpus: '1.00'
+          memory: 256M
+        reservations:
+          cpus: '0.50'
+          memory: 128M 
+
+  backend: 
+    build: ./backend
+    container_name: fastapi
+    command: bash start.sh
+    ports:
+      - 8000:8000
+    depends_on:
+      - db
+      - redis
+    networks:
+      - database-network
+      - app-network
+    deploy:
+      resources:
+        limits:
+          cpus: '1.00'
+          memory: 256M
+        reservations:
+          cpus: '0.50'
+          memory: 128M 
+
+  frontend: 
+    build: ./frontend
+    container_name: nodejs
+    command: npm run dev -- --host
+    ports:
+      - 1111:1111
+    depends_on:
+      - backend
+    networks:
+      - app-network
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 64M
+        reservations:
+          cpus: '0.50'
+          memory: 64M 
+
+  webserver:
+    build: ./nginx
+    container_name: nginx
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+      - frontend
+    networks:
+      - app-network
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 64M
+        reservations:
+          cpus: '0.50'
+          memory: 64M 
+
+networks:
+  database-network:
+    name: database-network
+    driver: bridge
+    
+  app-network:
+    name: app-network
+    driver: bridge

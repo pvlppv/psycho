@@ -37,15 +37,35 @@ app.include_router(
 
 
 origins = [
-    'http://localhost:5173',
+    'http://localhost:8000',
+    'http://localhost:1111',
+    'http://frontend:8000',
+    'http://webserver:8000',
+    'http://webserver:80',
+    'http://localhost',
+    'http://webserver',
+    'http://frontend',
 ]
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["*"],
     allow_credentials=True,
-    allow_methods=['GET', 'POST', 'OPTIONS', 'DELETE', 'PATCH', 'PUT'],
-    allow_headers=['Content-Type', 'Set-Cookie', 'Access-Control-Allow-Headers', 'Access-Control-Allow-Origin',
-                   'Authorization', 'Accept-Language'],
+    allow_methods=[
+        'GET',
+        'POST',
+        'OPTIONS',
+        'DELETE',
+        'PATCH',
+        'PUT',
+    ],
+    allow_headers=[
+        'Content-Type',
+        'Set-Cookie',
+        'Access-Control-Allow-Headers',
+        'Access-Control-Allow-Origin',
+        'Authorization',
+        'Accept-Language',
+    ],
 )
 # app.add_middleware(HTTPSRedirectMiddleware)
 

@@ -1,6 +1,17 @@
 <script setup>
+import { ref, computed, onMounted } from 'vue';
+import { useRoute } from 'vue-router';
 import theme from '@/assets/theme.js'; 
 import { ElNotification } from 'element-plus'
+
+// const aboutLink = computed(() => {
+//   const route = useRoute();
+//   return route.path === '/' ? { name: 'About' } : { name: 'Main' };
+// });
+// const langLink = computed(() => {
+//   const route = useRoute();
+//   return route.path === '/' ? { name: 'Lang' } : { name: 'Main' };
+// });
 
 // Notification
 const notification = () => {
@@ -18,15 +29,20 @@ const notification = () => {
         <span class="badge-value">Alpha</span>
         <h1 class="main-title2">Thoughty</h1>
     </div>
+    <!-- <el-badge value="Alpha">
+        <h1 class="main-title2">Thoughty</h1>
+    </el-badge> -->
     <p class="main-description">- бесконечная лента анонимных сообщений, где каждый может излить свою душу</p>
     <div class="main-settings">
         <el-tooltip effect="customized" content="О приложении" placement="bottom" :enterable="false" :hide-after="0" :offset="15">
+            <!-- <router-link :to="aboutLink"><i class="main-settings-one bx bx-info-circle"></i></router-link> -->
             <i class="main-settings-one bx bx-info-circle" @click="notification"></i>
         </el-tooltip>
         <el-tooltip effect="customized" content="Тема" placement="bottom" :enterable="false" :hide-after="0" :offset="15">
             <i class="main-settings-one bx" :class="{ 'bxs-moon': theme.darkTheme.value, 'bxs-sun': !theme.darkTheme.value }" @click="theme.toggleTheme"></i>
         </el-tooltip>
         <el-tooltip effect="customized" content="Язык" placement="bottom" :enterable="false" :hide-after="0" :offset="15">
+            <!-- <router-link :to="langLink"><i class="main-settings-one bx bx-world"></i></router-link> -->
             <i class="main-settings-one bx bx-world" @click="notification"></i>
         </el-tooltip>
     </div> 

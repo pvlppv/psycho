@@ -22,7 +22,17 @@ const router = createRouter({
             path: '/', 
             name: 'Main',
             component: Main,
+            // children: [
+            //     {path: '/about', name: 'About', component: () => import('@/components/AboutWindow.vue')},   
+            //     {path: '/lang', name: 'Lang', component: () => import('@/components/LangWindow.vue')},             
+            // ],
         },    
+        // {
+        //     path: '/messages/:message_id', 
+        //     name: 'Message',
+        //     component: async () => import('@/views/Message.vue'),
+        //     props: true,
+        // },
         {
             path: '/:catchAll(.*)',
             name: 'NotFound',
