@@ -1,21 +1,22 @@
+import asyncio
 import json
 from math import ceil
 from typing import List
-from fastapi import APIRouter, HTTPException, Depends, Path, Request, Response, WebSocket, WebSocketDisconnect, status
+from uuid import UUID
+
+from fastapi import (APIRouter, Depends, HTTPException, Path, Request,
+                     Response, WebSocket, WebSocketDisconnect, status)
 from fastapi.responses import HTMLResponse
 from fastapi_cache import FastAPICache
-from pydantic import ValidationError
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, insert
-from db import get_async_session
-from report.models import Report
-from report.schemas import Report_Read, Report_Create
 from fastapi_cache.decorator import cache
-from db import async_session_maker
 from fastapi_limiter.depends import RateLimiter, WebSocketRateLimiter
-from uuid import UUID
-import asyncio
+from pydantic import ValidationError
+from sqlalchemy import insert, select
+from sqlalchemy.ext.asyncio import AsyncSession
 
+from db import async_session_maker, get_async_session
+from report.models import Report
+from report.schemas import Report_Create, Report_Read
 
 router = APIRouter(
     tags=['report']

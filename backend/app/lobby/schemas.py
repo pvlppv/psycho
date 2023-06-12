@@ -1,8 +1,8 @@
-from pydantic import BaseModel, validator
-from datetime import datetime
 import re
-import pymorphy2
+from datetime import datetime
 
+import pymorphy2
+from pydantic import BaseModel, validator
 
 morph = pymorphy2.MorphAnalyzer()
 

@@ -1,12 +1,13 @@
-from typing import List
-from fastapi import APIRouter, HTTPException, Depends, Path, status
-from db import get_async_session
-from sqlalchemy.ext.asyncio import AsyncSession
-from lobby.models import Message
-from sqlalchemy import select
 import asyncio
-from message.schemas import Message_Read
+from typing import List
 
+from fastapi import APIRouter, Depends, HTTPException, Path, status
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from db import get_async_session
+from lobby.models import Message
+from message.schemas import Message_Read
 
 router = APIRouter(
     tags=['message']
