@@ -33,7 +33,7 @@ class PostResponse(BaseModel):
     created_at: datetime.datetime = datetime.datetime.now()
 
     class Config:
-        orm_mode=True
+        orm_mode = True
 
 
 class GetResponse(BaseModel):
@@ -41,7 +41,7 @@ class GetResponse(BaseModel):
     items: typing.List[PostResponse]
 
     class Config:
-        orm_mode=True
+        orm_mode = True
 
 
 class PatchRequest(BaseModel):
@@ -58,6 +58,7 @@ class PatchRequest(BaseModel):
             raise ValueError(f"Status has an undefined state ({status})")
         return status
 
+
 class PatchResponse(BaseModel):
     id: int = 1
     email: str = "mr.pipiskin228@mail.ru"
@@ -66,4 +67,4 @@ class PatchResponse(BaseModel):
     created_at: datetime.datetime
 
     class Config:
-        orm_mode=True
+        orm_mode = True

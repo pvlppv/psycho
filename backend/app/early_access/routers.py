@@ -1,7 +1,6 @@
 import typing
 
 from fastapi import APIRouter, Depends, HTTPException, Path, responses, status
-from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from db import get_async_session
@@ -13,6 +12,7 @@ router = APIRouter(
     prefix="/early-access",
     tags=["/early-access"],
 )
+
 
 @router.get(
     path="/",

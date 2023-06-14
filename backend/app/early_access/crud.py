@@ -1,6 +1,6 @@
 import typing
 
-from sqlalchemy import select, insert
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from early_access import models
@@ -11,7 +11,7 @@ from early_access.schemas import (GetResponse, PatchRequest, PatchResponse,
 class EarlyAccess:
     def __init__(self, session: AsyncSession) -> None:
         self.session = session
-    
+
     async def create(self, query: PostRequest) -> PostResponse:
         database_query = models.EarlyAccess(**query.dict())
         self.session.add(database_query)
@@ -27,7 +27,7 @@ class EarlyAccess:
         return len(response), response
 
     async def get_by_id(self, id: int) -> PostResponse:
-        query = select(models.EarlyAccess).where(models.EarlyAccess.id==id)
+        query = select(models.EarlyAccess).where(models.EarlyAccess.id == id)
         result = await self.session.execute(query)
         return result.scalars().all()
 
@@ -35,7 +35,7 @@ class EarlyAccess:
         return
 
     async def email_exist(self, email: str) -> bool:
-        query = select(models.EarlyAccess).where(models.EarlyAccess.email==email)
+        query = select(models.EarlyAccess).where(models.EarlyAccess.email == email)
         result = await self.session.execute(query)
         if len(result.scalars().all()) >= 1:
             return True

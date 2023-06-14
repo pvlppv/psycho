@@ -13,4 +13,3 @@ class EarlyAccess(Base):
     type = Column(String, nullable=False, default="main")
     status = Column(String, nullable=False, default="waiting")
     created_at = Column(TIMESTAMP(timezone=True), default=datetime.now)
-
