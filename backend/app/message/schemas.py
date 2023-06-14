@@ -1,5 +1,4 @@
 from datetime import datetime
-from typing import Optional
 
 from pydantic import BaseModel
 
@@ -11,4 +10,4 @@ class Message_Read(BaseModel):
     created_at: datetime
 
     class Config:
-        orm_mode=True
+        orm_mode = True
